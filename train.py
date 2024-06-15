@@ -72,8 +72,11 @@ for im , bbox in (train_dataloader):
     
     concat = torch.cat((best_bbox1,best_bbox2),dim=-1)
     best_box_objectness_score  , index_ = torch.max(concat,dim=-1,keepdim=True)
+    mask = (index_ == 0).float()
+   
 
-    best_bbox_pred = index_ * bbox1_pred + (1 - index_) * bbox2_pred
+    best_bbox_pred = mask * bbox1_pred + (1 - mask) * bbox2_pred
+
     
     loss_ms = loss_mse(best_bbox_pred, bbox_ground_truth)
     print(loss_ms)
